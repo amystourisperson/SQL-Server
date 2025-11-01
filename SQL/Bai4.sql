@@ -1,0 +1,119 @@
+CREATE DATABASE QUANLYBH
+
+GO
+
+USE QUANLYBH
+	
+GO
+
+CREATE TABLE HANGSX
+(
+	MaHangSX NCHAR(10) PRIMARY KEY NOT NULL,
+	TenHang NVARCHAR(20) NOT NULL,
+	DiaChi NVARCHAR(30) NOT NULL,
+	SoDT NVARCHAR(20) NOT NULL,
+	Email NVARCHAR(30)
+)
+GO
+
+CREATE TABLE SANPHAM
+(
+	MaSP NCHAR(10) PRIMARY KEY NOT NULL,
+	MaHangSX NCHAR(10) NOT NULL,
+	CONSTRAINT FK_SANPHAM_HANGSX FOREIGN KEY(MaHangSX)
+		REFERENCES HANGSX(MaHangSX),
+	TenSP NVARCHAR(20) NOT NULL,
+	SoLuong INT,
+	MauSac NVARCHAR(20),
+	GiaBan MONEY,
+	DonViTinh NCHAR(10),
+	MoTa NVARCHAR(max)
+)
+GO
+
+CREATE TABLE NHANVIEN
+(
+	MaNV NCHAR(10) PRIMARY KEY NOT NULL,
+	TenNV NVARCHAR(20) NOT NULL,
+	GioiTinh NCHAR(10),
+	DiaChi NVARCHAR(30) NOT NULL,
+	SoDT NVARCHAR(30) NOT NULL,
+	Email NVARCHAR(30) NOT NULL,
+	TenPhong NVARCHAR(30) NOT NULL,
+)
+GO
+
+CREATE TABLE PNHAP
+(
+	SoHDN NCHAR(10) PRIMARY KEY NOT NULL,
+	NgayNhap DATE,
+	MaNV NCHAR(10) NOT NULL,
+	CONSTRAINT FK_PNHAP_NHANVIEN FOREIGN KEY(MaNV)
+		REFERENCES NHANVIEN(MaNV)
+)
+GO
+
+CREATE TABLE NHAP
+(
+	SoHDN NCHAR(10) NOT NULL,
+	MaSP NCHAR(10) NOT NULL,
+	--vua la khoa chinh vua la khoa phu
+	CONSTRAINT PK_NHAP PRIMARY KEY(SoHDN, MaSP),
+	CONSTRAINT FK_NHAP_PNHAP FOREIGN KEY(SoHDN)
+		REFERENCES PNHAP(SoHDN), --tro toi sohdn cua pnhap
+	CONSTRAINT FK_NHAP_SANPHAM FOREIGN KEY(MaSP)
+		REFERENCES SANPHAM(MaSP),
+	SoLuongN INT,
+	DonGiaN MONEY,
+)
+GO
+
+CREATE TABLE PXUAT
+(
+	SoHDX NCHAR(10) PRIMARY KEY NOT NULL,
+	NgayXuat DATE,
+	MaNV NCHAR(10) NOT NULL,
+	CONSTRAINT FK_PXUAT_NHANVIEN FOREIGN KEY(MaNV)
+		REFERENCES NHANVIEN(MaNV)
+)
+GO
+
+
+CREATE TABLE XUAT
+(
+	SoHDX NCHAR(10) NOT NULL,
+	MaSP NCHAR(10) NOT NULL,
+	CONSTRAINT PK_XUAT PRIMARY KEY(SoHDX, MaSP),
+	CONSTRAINT FK_NHAP_PXUAT FOREIGN KEY(SoHDX)
+		REFERENCES PXUAT(SoHDX),
+	CONSTRAINT FK_XUAT_SANPHAM FOREIGN KEY(MaSP)
+		REFERENCES SANPHAM(MaSP),
+	SoLuongX INT
+)
+GO
+
+--nhap du lieu
+INSERT INTO HANGSX([MaHangSX],[TenHang],[DiaChi],[SoDT],[Email]) VALUES
+	('H01', 'SamSung', 'Korea', '01281829', 'ss@gmail.com'),
+	('H02', 'OPPO', 'China', '18291082', 'oopo@gmail.com'),
+	('H03', 'Vinafone', 'VieNam', '03918291', 'vf@gmail.com')
+
+SELECT * from HANGSX
+
+INSERT INTO NHANVIEN([MaNV],[TenNV],[GioiTinh],[DiaChi],[SoDT],[Email],[TenPhong]) VALUES
+	('NV01', 'Nguyen Van A','Nu', 'HaNoi', '02912819','a@gmail.com','Ke toan'),
+	('NV02', 'Nguyen Thi Ngoc','Nu', 'HaNam', '18104139','n@gmail.com','Vat Tu'),
+	('NV03', 'Nguyen Ngoc Lan','Nu', 'BacNinh', '81912819','l@gmail.com','Tai Chinh')
+
+SELECT * from NHANVIEN
+
+INSERT INTO SANPHAM([MaSP],[MaHangSX],[TenSP],[SoLuong],[MauSac],[GiaBan],[DonViTinh],[MoTa]) VALUES
+	('SP01', 'H02','F1 Plus', 100, 'Xam', 70000, 'Chiec', 'Hang cao cap'),
+	('SP02', 'H01','Glaxy', 50, 'Do', 14000, 'Chiec', 'Hang cao cap'),
+	('SP03', 'H02','F3 Line', 199, 'Nau', 1000, 'Chiec', 'Hang cao cap'),
+	('SP04', 'H03','Vjoy3', 1009, 'Den', 19200, 'Chiec', 'Hang cao cap'),
+	('SP05', 'H02','Iphone Plus', 500, 'Cam', 80000, 'Chiec', 'Hang cao cap')
+
+SELECT * from SANPHAM
+
+
